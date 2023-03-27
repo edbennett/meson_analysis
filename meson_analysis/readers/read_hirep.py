@@ -81,6 +81,10 @@ def add_row(ensemble, split_line, stream_name, cfg_index):
 def read_correlators_hirep(filename):
     correlators = CorrelatorEnsemble(filename)
 
+    # Track which configurations have provided results;
+    # don't allow duplicates
+    read_cfgs = set()
+
     with open(filename) as f:
         for line in f.readlines():
             line_contents = line.split()
@@ -89,11 +93,17 @@ def read_correlators_hirep(filename):
                 and line_contents[2] == "read"
             ):
                 run_name, cfg_index = parse_cfg_filename(line_contents[1][1:-1])
+
+                if (run_name, cfg_index) in read_cfgs:
+                    logging.warn(
+                        f"Possible duplicate data in {run_name} trajectory {cfg_index}."
+                    )
                 continue
 
             add_metadata(correlators.metadata, line_contents)
 
             if line_contents[0] == "[MAIN][0]conf":
+                read_cfgs.add((run_name, cfg_index))
                 add_row(correlators, line_contents, run_name, int(cfg_index))
 
     correlators.freeze()

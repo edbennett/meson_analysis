@@ -39,7 +39,7 @@ def parse_cfg_filename(filename):
     """
 
     run_name, cfg_index = re.match(
-        r".*/([^/]*)_[0-9]+x[0-9]+x[0-9]+x[0-9]+nc[0-9]+nf[0-9]+b[0-9]+\.[0-9]+m-?[0-9]+\.[0-9]+n([0-9]+)",
+        r".*/([^/]*)_[0-9]+x[0-9]+x[0-9]+x[0-9]+nc[0-9]+(?:r[A-Z]+)?nf[0-9]+b[0-9]+\.[0-9]+m-?[0-9]+\.[0-9]+n([0-9]+)",
         filename,
     ).groups()
     return run_name, cfg_index
@@ -59,10 +59,18 @@ def add_row(ensemble, split_line, stream_name, cfg_index):
                    within its Monte Carlo stream.
     """
     valence_mass = float(split_line[2][5:])
-    source_type = split_line[3]
-    connection_type = split_line[4]
-    channel = split_line[5][:-1]
-    correlator = np.asarray(split_line[6:], dtype=float)
+    try:
+        _ = float(split_line[5])
+    except ValueError:
+        # Column 5 is a channel name, so source type is explicit
+        source_type = split_line.pop(3)
+    else:
+        # Column 5 is a number, so source type is not stated
+        source_type = "DEFAULT_SEMWALL"
+
+    connection_type = split_line[3]
+    channel = split_line[4][:-1]
+    correlator = np.asarray(split_line[5:], dtype=float)
 
     ensemble.append(
         Correlator(

@@ -13,6 +13,7 @@ def add_metadata(metadata, line_contents):
     if (
         line_contents[0] == "[GEOMETRY][0]Global"
         or line_contents[0] == "[GEOMETRY_INIT][0]Global"
+        or line_contents[0] == "[MAIN][0]global"
     ):
         NT, NX, NY, NZ = map(
             int,
@@ -38,10 +39,11 @@ def parse_cfg_filename(filename):
         cfg_index: The index of the trajectory in the stream
     """
 
-    run_name, cfg_index = re.match(
-        r".*/([^/]*)_[0-9]+x[0-9]+x[0-9]+x[0-9]+nc[0-9]+(?:r[A-Z]+)?nf[0-9]+b[0-9]+\.[0-9]+m-?[0-9]+\.[0-9]+n([0-9]+)",
+    matched_filename = re.match(
+        r".*/([^/]*)_[0-9]+x[0-9]+x[0-9]+x[0-9]+nc[0-9]+(?:r[A-Z]+)?(?:nf[0-9]+)?b[0-9]+\.[0-9]+m-?[0-9]+\.[0-9]+n([0-9]+)",
         filename,
-    ).groups()
+    )
+    run_name, cfg_index = matched_filename.groups()
     return run_name, cfg_index
 
 
@@ -104,7 +106,7 @@ def read_correlators_hirep(filename):
 
                 if (run_name, cfg_index) in read_cfgs:
                     logging.warn(
-                        f"Possible duplicate data in {run_name} trajectory {cfg_index}."
+                        f"Possible duplicate data in {run_name} trajectory {cfg_index} of file {filename}"
                     )
                 continue
 

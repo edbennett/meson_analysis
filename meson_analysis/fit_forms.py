@@ -5,6 +5,10 @@ from functools import partial
 from autograd.numpy import exp
 
 
+def flat_fit_form(params, t):
+    return params[0]
+
+
 def ps_fit_form(params, t, NT=None):
     mass = params[0]
     decay_const = params[1]

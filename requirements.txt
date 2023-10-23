@@ -1,5 +1,1 @@
-awkward
-numba
-numpy
 pre-commit
-pyerrors

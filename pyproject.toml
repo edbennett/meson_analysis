@@ -17,7 +17,7 @@ classifiers = [
 dependencies = [
     "numba",
     "numpy",
-    "pyerrors,"
+    "pyerrors",
 ]
 
 [project.urls]

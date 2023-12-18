@@ -13,7 +13,7 @@ from ..correlator import CorrelatorEnsemble, Correlator
 
 def pair_to_complex(value):
     real, imag = map(float, value.strip("()").split(","))
-    return real + imag * 1J
+    return real + imag * 1j
 
 
 def read_single_mres_file(filepath, ensemble):

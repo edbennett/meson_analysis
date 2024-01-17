@@ -113,6 +113,10 @@ class CorrelatorEnsemble:
 
         return True
 
+    @property
+    def frozen(self):
+        return self._frozen
+
     def get_pyerrors(self, tag=None, **criteria):
         channel_subset = self.get(**criteria).reset_index()
 

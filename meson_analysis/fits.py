@@ -15,7 +15,7 @@ def fit_single_correlator(correlator_ensemble, channel, plateau_range):
     correlator.gamma_method()
 
     fit_form = get_fit_form(correlator_ensemble.NT, "v")
-    result = correlator.fit(fit_form)
+    result = correlator.fit(fit_form, silent=True)
     result.gamma_method()
     return result.fit_parameters
 
@@ -75,7 +75,7 @@ def fit_multi_correlators(
     else:
         assert set(fit_forms.keys()) == set(channels)
 
-    result = least_squares(x, y, fit_forms)
+    result = least_squares(x, y, fit_forms, silent=True)
     result.gamma_method()
 
     if full:
@@ -106,7 +106,7 @@ def pcac_eff_mass(correlator_ensemble, **filters):
 
 def fit_pcac(correlator_ensemble, plateau_range, filters={}, full=False):
     eff_mass = pcac_eff_mass(correlator_ensemble, **filters)
-    result = eff_mass.fit(flat_fit_form, fitrange=plateau_range)
+    result = eff_mass.fit(flat_fit_form, fitrange=plateau_range, silent=True)
     result.gamma_method()
 
     if full:

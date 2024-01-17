@@ -117,7 +117,9 @@ class CorrelatorEnsemble:
     def frozen(self):
         return self._frozen
 
-    def get_pyerrors(self, tag=None, **criteria):
+    def get_pyerrors(
+        self, symmetry=None, enforce_positive_start=True, tag=None, **criteria
+    ):
         channel_subset = self.get(**criteria).reset_index()
 
         NT = self.NT
@@ -144,6 +146,15 @@ class CorrelatorEnsemble:
 
         corr = pe.Corr(observables)
         corr.tag = tag
+
+        if symmetry == "antisymmetric":
+            corr = corr.anti_symmetric()
+        elif symmetry == "symmetric":
+            corr = corr.symmetric()
+
+        if enforce_positive_start and corr[1] < 0:
+            corr = -corr
+
         return corr
 
 

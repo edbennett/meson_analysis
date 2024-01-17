@@ -9,12 +9,11 @@ from .fit_forms import get_fit_form, flat_fit_form
 from .readers import read_correlators_hirep
 
 
-def fit_single_correlator(correlator_ensemble, channel, plateau_range):
-    correlator = correlator_ensemble.get_pyerrors(channel=channel)
+def fit_single_correlator(correlator, plateau_range):
     correlator.set_prange(plateau_range)
     correlator.gamma_method()
 
-    fit_form = get_fit_form(correlator_ensemble.NT, "v")
+    fit_form = get_fit_form(correlator.T, "v")
     result = correlator.fit(fit_form, silent=True)
     result.gamma_method()
     return result.fit_parameters

@@ -9,7 +9,12 @@ import numpy as np
 from ..correlator import CorrelatorEnsemble, Correlator
 
 
-_reps = {"FUN": "fundamental", "SYM": "symmetric", "ASY": "antisymmetric", "ADJ": "adjoint"}
+_reps = {
+    "FUN": "fundamental",
+    "SYM": "symmetric",
+    "ASY": "antisymmetric",
+    "ADJ": "adjoint",
+}
 
 
 def add_metadata(metadata, line_contents):
@@ -91,7 +96,15 @@ def parse_cfg_filename(filename):
     )
     run_name, Nc, rep, Nf, beta, mass, cfg_index = matched_filename.groups()
 
-    return run_name, int(Nc), _reps[rep], int(Nf), float(beta), float(mass), int(cfg_index)
+    return (
+        run_name,
+        int(Nc),
+        _reps[rep],
+        int(Nf),
+        float(beta),
+        float(mass),
+        int(cfg_index),
+    )
 
 
 def add_row(ensemble, split_line, stream_name, cfg_index):
@@ -153,7 +166,9 @@ def read_correlators_hirep(filename):
                 line_contents[0] == "[IO][0]Configuration"
                 and line_contents[2] == "read"
             ):
-                run_name, Nc, rep, Nf, beta, mass, cfg_index = parse_cfg_filename(line_contents[1][1:-1])
+                run_name, Nc, rep, Nf, beta, mass, cfg_index = parse_cfg_filename(
+                    line_contents[1][1:-1]
+                )
                 add_cfg_metadata(correlators.metadata, Nc, rep, Nf, beta, mass)
 
                 if (run_name, cfg_index) in read_cfgs:

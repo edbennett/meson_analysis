@@ -17,6 +17,14 @@ _reps = {
 }
 
 
+def get_representation(macros):
+    macros = [macros[0].replace("[SYSTEM][0]MACROS=", "")] + macros[1:]
+
+    for macro in macros:
+        if macro.startswith("-DREPR_NAME"):
+            return macro.replace('-DREPR_NAME="REPR_', "").strip('"').lower()
+
+
 def add_metadata(metadata, line_contents):
     """
     Parse out possible metadata given on a line,
@@ -45,10 +53,13 @@ def add_metadata(metadata, line_contents):
     if line_contents[:2] == ["[MAIN][0]Fermion", "representation:"]:
         metadata["valence_representation"] = line_contents[2][5:].lower()
 
-    if line_contents[:2] == ["[MAIN][0]Gauge", "group:"]:
+    if line_contents[1] == "group:" and line_contents[0] in ["[SYSTEM][0]Gauge", "[MAIN][0]Gauge"]:
         group_family, Nc = line_contents[2].strip(")").split("(")
         metadata["group_family"] = group_family
         metadata["Nc"] = int(Nc)
+
+    if line_contents[0].startswith("[SYSTEM][0]MACROS="):
+        metadata["valence_representation"] = get_representation(line_contents)
 
 
 def add_single_consistent_metadatum(metadata, name, value):
@@ -162,6 +173,8 @@ def read_correlators_hirep(filename):
     with open(filename) as f:
         for line in f.readlines():
             line_contents = line.split()
+            if not line_contents:
+                continue
             if (
                 line_contents[0] == "[IO][0]Configuration"
                 and line_contents[2] == "read"

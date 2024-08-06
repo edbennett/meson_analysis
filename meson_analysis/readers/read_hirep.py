@@ -53,7 +53,10 @@ def add_metadata(metadata, line_contents):
     if line_contents[:2] == ["[MAIN][0]Fermion", "representation:"]:
         metadata["valence_representation"] = line_contents[2][5:].lower()
 
-    if line_contents[1] == "group:" and line_contents[0] in ["[SYSTEM][0]Gauge", "[MAIN][0]Gauge"]:
+    if line_contents[1] == "group:" and line_contents[0] in [
+        "[SYSTEM][0]Gauge",
+        "[MAIN][0]Gauge",
+    ]:
         group_family, Nc = line_contents[2].strip(")").split("(")
         metadata["group_family"] = group_family
         metadata["Nc"] = int(Nc)

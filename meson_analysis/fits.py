@@ -95,7 +95,7 @@ def pcac_eff_mass(correlator_ensemble, **filters):
     g5_g0g5_re.gamma_method()
     pcac_eff_mass = correction * g5_g0g5_re.deriv() / (2 * g5)
 
-    if pcac_eff_mass[pcac_eff_mass.T // 2] < 0:
+    if pcac_eff_mass[pcac_eff_mass.T // 4] < 0:
         # Ensure masses are positive
         pcac_eff_mass = -pcac_eff_mass
 

@@ -113,7 +113,7 @@ def parse_cfg_filename(filename):
     return (
         run_name,
         int(Nc),
-        _reps[rep],
+        _reps[rep] if rep else None,
         int(Nf),
         float(beta),
         float(mass),
@@ -172,12 +172,20 @@ def read_correlators_hirep(filename):
     # Track which configurations have provided results;
     # don't allow duplicates
     read_cfgs = set()
+    run_repr = None
 
     with open(filename) as f:
         for line in f.readlines():
             line_contents = line.split()
             if not line_contents:
                 continue
+            if line[0].startswith("[SYSTEM][0]MACROS="):
+                for flag in line:
+                    if flag.startswith("-DREPR_"):
+                        run_repr = flag[7:].lower()
+                        continue
+                else:
+                    run_repr = None
             if (
                 line_contents[0] == "[IO][0]Configuration"
                 and line_contents[2] == "read"
@@ -185,6 +193,11 @@ def read_correlators_hirep(filename):
                 run_name, Nc, rep, Nf, beta, mass, cfg_index = parse_cfg_filename(
                     line_contents[1][1:-1]
                 )
+                if rep is None:
+                    rep = run_repr
+                elif run_repr is not None and repr != run_repr:
+                    raise ValueError("Representation mismatch between ensemble and code")
+
                 add_cfg_metadata(correlators.metadata, Nc, rep, Nf, beta, mass)
 
                 if (run_name, cfg_index) in read_cfgs:

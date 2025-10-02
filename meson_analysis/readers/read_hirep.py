@@ -114,7 +114,7 @@ def parse_cfg_filename(filename):
         run_name,
         int(Nc),
         _reps[rep] if rep else None,
-        int(Nf),
+        int(Nf) if Nf else None,
         float(beta),
         float(mass),
         int(cfg_index),

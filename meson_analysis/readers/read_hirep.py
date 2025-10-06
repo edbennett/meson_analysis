@@ -196,7 +196,9 @@ def read_correlators_hirep(filename):
                 if rep is None:
                     rep = run_repr
                 elif run_repr is not None and repr != run_repr:
-                    raise ValueError("Representation mismatch between ensemble and code")
+                    raise ValueError(
+                        "Representation mismatch between ensemble and code"
+                    )
 
                 add_cfg_metadata(correlators.metadata, Nc, rep, Nf, beta, mass)
 

@@ -8,7 +8,6 @@ import numpy as np
 
 from ..correlator import CorrelatorEnsemble, Correlator
 
-
 channels = {
     "AA": "AA",
     "AP": "AP",

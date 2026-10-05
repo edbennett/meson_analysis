@@ -8,7 +8,6 @@ import numpy as np
 
 from ..correlator import CorrelatorEnsemble, Correlator
 
-
 _reps = {
     "FUN": "fundamental",
     "SYM": "symmetric",
@@ -53,10 +52,15 @@ def add_metadata(metadata, line_contents):
     if line_contents[:2] == ["[MAIN][0]Fermion", "representation:"]:
         metadata["valence_representation"] = line_contents[2][5:].lower()
 
-    if len(line_contents) > 1 and line_contents[1] == "group:" and line_contents[0] in [
-        "[SYSTEM][0]Gauge",
-        "[MAIN][0]Gauge",
-    ]:
+    if (
+        len(line_contents) > 1
+        and line_contents[1] == "group:"
+        and line_contents[0]
+        in [
+            "[SYSTEM][0]Gauge",
+            "[MAIN][0]Gauge",
+        ]
+    ):
         group_family, Nc = line_contents[2].strip(")").split("(")
         metadata["group_family"] = group_family
         metadata["Nc"] = int(Nc)
@@ -196,7 +200,9 @@ def read_correlators_hirep(filename):
                 if rep is None:
                     rep = run_repr
                 elif run_repr is not None and repr != run_repr:
-                    raise ValueError("Representation mismatch between ensemble and code")
+                    raise ValueError(
+                        "Representation mismatch between ensemble and code"
+                    )
 
                 add_cfg_metadata(correlators.metadata, Nc, rep, Nf, beta, mass)
 
